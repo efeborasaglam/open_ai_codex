@@ -1,0 +1,62 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Hauptcontainer */
+body {
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  background-color: #0c0c35;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Chat-Box */
+.chat-box {
+  height: 65vh;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+/* Nutzer- und Bot-Nachrichten */
+.user {
+  text-align: right;
+  font-weight: bold;
+  color: #007bff;  /* Bootstrap Blau */
+}
+
+.bot {
+  text-align: left;
+  font-weight: bold;
+  color: #28a745; /* Bootstrap Grün */
+}
+
+/* Input-Feld */
+.input-box {
+  display: flex;
+  gap: 10px;
+}
+
+/* Ladeanimation */
+@keyframes dots {
+  0% { content: "."; }
+  33% { content: ".."; }
+  66% { content: "..."; }
+}
+
+.loading-text .dots::after {
+  display: inline-block;
+  animation: dots 1.5s infinite steps(1);
+  content: "...";
+}
+
+.chat-box-container {
+  max-width: 1500px; /* Max. Breite für große Bildschirme */
+  width: 100%; /* Volle Breite für kleine Screens */
+}
+
+.chat-box {
+  height: 400px;
+  overflow-y: auto;
+}

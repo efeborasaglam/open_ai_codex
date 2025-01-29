@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StuyChat</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        .chat-box { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: auto; }
+        .message { margin: 5px 0; }
+        .user { text-align: right; font-weight: bold; }
+        .bot { text-align: left; font-weight: bold; }
+        input { width: 80%; padding: 10px; }
+        button { padding: 10px; }
+    </style>
+</head>
+<body>
+    <h2>StudyChat</h2>
+    <div class="chat-box" id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById("user-input");
+            const chatBox = document.getElementById("chat-box");
+            const userMessage = inputField.value;
+            if (!userMessage.trim()) return;
+            
+            chatBox.innerHTML += `<div class='message user'>You: ${userMessage}</div>`;
+            inputField.value = "";
+            
+            try {
+                const response = await fetch("http://localhost:3000/chat", { // Passe die API-URL an
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userMessage }),
+                });
+                const data = await response.json();
+                chatBox.innerHTML += `<div class='message bot'>StudyChat: ${data.reply}</div>`;
+            } catch (error) {
+                chatBox.innerHTML += `<div class='message bot'>Error: ${error.message}</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+
+
+    <script type="module">
+        import dotenv from "dotenv";
+        dotenv.config();
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+        
+        const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        
+        async function chatWithAI(message) {
+            const chat = model.startChat({
+                history: [],
+                generationConfig: { maxOutputTokens: 500 },
+            });
+            
+            const result = await chat.sendMessageStream(message);
+            let responseText = "";
+            for await (const chunk of result.stream) {
+                responseText += await chunk.text();
+            }
+            return responseText;
+        }
+
+        window.sendMessage = async function () {
+            const inputField = document.getElementById("user-input");
+            const chatBox = document.getElementById("chat-box");
+            const userMessage = inputField.value;
+            if (!userMessage.trim()) return;
+            
+            chatBox.innerHTML += `<div class='message user'>You: ${userMessage}</div>`;
+            inputField.value = "";
+            
+            try {
+                const reply = await chatWithAI(userMessage);
+                chatBox.innerHTML += `<div class='message bot'>StudyChat: ${reply}</div>`;
+            } catch (error) {
+                chatBox.innerHTML += `<div class='message bot'>Error: ${error.message}</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+    </script>
+</body>
+</html>
