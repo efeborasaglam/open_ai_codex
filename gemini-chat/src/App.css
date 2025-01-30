@@ -52,11 +52,23 @@ body {
 }
 
 .chat-box-container {
-  max-width: 1500px; /* Max. Breite für große Bildschirme */
-  width: 100%; /* Volle Breite für kleine Screens */
+  width: 1000px; /* Fixe Breite auf größeren Screens */
+  max-width: 90%; /* Damit es auf kleinen Screens nicht zu breit ist */
+}
+
+.chat-box-container-1 {
+  width: 750px; /* Fixe Breite auf größeren Screens */
+  max-width: 90%; /* Damit es auf kleinen Screens nicht zu breit ist */
+}
+
+.chat-box-container-2 {
+  width: 400px; /* Fixe Breite auf größeren Screens */
+  max-width: 90%; /* Damit es auf kleinen Screens nicht zu breit ist */
 }
 
 .chat-box {
-  height: 400px;
-  overflow-y: auto;
+  height: 400px; /* Fixe Höhe, egal wie viele Nachrichten */
+  overflow-y: auto; /* Scrollbar, wenn zu viele Nachrichten */
+  display: flex;
+  flex-direction: column;
 }
